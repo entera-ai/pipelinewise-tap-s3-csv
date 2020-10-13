@@ -2,6 +2,7 @@
 Tap S3 csv main script
 """
 
+import csv
 import sys
 import ujson
 import singer
@@ -78,6 +79,20 @@ def main() -> None:
     Main function
     :return: None
     """
+    # We observed data who's field size exceeded the default maximum of
+    # 131072. We believe the primary consequence of the following setting
+    # is that a malformed, wide CSV would potentially parse into a single
+    # large field rather than giving this error, but we also think the
+    # chances of that are very small and at any rate the source data would
+    # need to be fixed. The other consequence of this could be larger
+    # memory consumption but that's acceptable as well.
+    csv.field_size_limit(sys.maxsize)
+
+    # Mock out `csv.field_size_limit` since messytables sets it...
+    # TODO: replace messytables
+    _field_size_limit = csv.field_size_limit
+    csv.field_size_limit = lambda size: None
+
     args = singer.utils.parse_args(REQUIRED_CONFIG_KEYS)
     config = args.config
 
@@ -95,6 +110,8 @@ def main() -> None:
         do_discover(args.config)
     elif args.properties:
         do_sync(config, args.properties, args.state)
+
+    csv.field_size_limit = _field_size_limit
 
 
 if __name__ == '__main__':
