@@ -35,18 +35,9 @@ def generate_schema(samples: List[Dict], table_spec: Dict) -> Dict:
         if header in date_overrides:
             schema[header] = {'type': ['null', 'string'], 'format': 'date-time'}
         else:
-            if isinstance(header_type, IntegerType):
-                schema[header] = {
-                    'type': ['null', 'integer']
-                }
-            elif isinstance(header_type, DecimalType):
-                schema[header] = {
-                    'type': ['null', 'number']
-                }
-            else:
-                schema[header] = {
-                    'type': ['null', 'string']
-                }
+            schema[header] = {
+                'type': ['null', 'string']
+            }
 
     return schema
 
