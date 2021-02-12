@@ -80,8 +80,11 @@ def get_sampled_schema_for_table(config: Dict, table_spec: Dict) -> Dict:
     LOGGER.info('Sampling records to determine table schema.')
 
     s3_files_gen = get_input_files_for_table(config, table_spec)
+    s3_files_list = [obj for obj in s3_files_gen]
 
-    samples = list(sample_files(config, table_spec, s3_files_gen))
+    sorted_s3_files = sorted(s3_files_list, reverse=True, key=lambda k: k['last_modified'])
+
+    samples = list(sample_files(config, table_spec, sorted_s3_files))
 
     if not samples:
         return {}
