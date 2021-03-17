@@ -19,7 +19,7 @@ setup(name='pipelinewise-tap-s3-csv',
       py_modules=['tap_s3_csv'],
       install_requires=[
           'boto3==1.9.57',
-          'singer-encodings==0.0.*',
+          'singer-encodings @ git+ssh://git@github.com/entera-ai/singer-encodings@master#egg=singer-encodings',
           'pipelinewise-singer-python==1.*',
           'voluptuous==0.10.5',
           'ujson==1.35.*',
